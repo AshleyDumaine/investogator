@@ -1,0 +1,7 @@
+build
+dist
+investogator.egg-info
+*.pyc
+.idea
+venv
+config.json
