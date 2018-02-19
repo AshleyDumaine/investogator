@@ -56,49 +56,48 @@ def get_sustainability(symbol):
 # This allows you to get ranked ETFs depending on which category you're
 # interested in (e.g. tech, large cap growth, etc)
 # TODO: make it possible to pick multiple categories
+cat_dict = {
+        "large-cap-blend":2,
+        "large-cap-growth":3,
+        "large-cap-value":11,
+        "tech":15
+}
 @cli.command("get-ranked-etfs")
-@click.argument('category', nargs=1, type=click.Choice([
-    'tech',
-    'large-cap-growth']))
+@click.argument('category', nargs=1, type=click.Choice(cat_dict.keys()))
 @click.option('--limit', default=25)
 def get_ranked_etfs(category, limit):
     # Not quite sure of a good way to get the category ID for now aside from
     # just going into the inspector on each category's page so we have a dict
     # to hold the mappings for now
-    cat_dict = {
-            "tech":15,
-            "large-cap-growth":3
-    }
     etf_symbol_list = get_all_etfs(cat_dict[category], limit)
     get_etf_rank_list(etf_symbol_list)
 
 
+# We want good ranks to be high numbers (5 max) so we need to convert some
+# rankings
+sus_rank_dict = {
+        "HIGH":5,
+        "ABOVE AVERAGE":4,
+        "AVERAGE":3,
+        "BELOW AVERAGE":2,
+        "LOW":1,
+        "NO RATING":0
+}
+    
+zacks_rank_dict = {
+        "1 - Strong Buy":5,
+        "2 - Buy":4,
+        "3 - Hold":3,
+        "4 - Sell":2,
+        "5 - Strong Sell":1
+}
 def get_etf_rank_list(etf_symbol_list):
 
     ranked_etfs = []
     if len(etf_symbol_list) == 0:
         print("No symbols found.")
         return
-
-    # We want good ranks to be high numbers (5 max) so we need to convert some
-    # rankings
-    sus_rank_dict = {
-            "HIGH":5,
-            "ABOVE AVERAGE":4,
-            "AVERAGE":3,
-            "BELOW AVERAGE":2,
-            "LOW":1,
-            "NO RATING":0
-    }
-    
-    zacks_rank_dict = {
-            "1 - Strong Buy":5,
-            "2 - Buy":4,
-            "3 - Hold":3,
-            "4 - Sell":2,
-            "5 - Strong Sell":1
-    }
-    
+ 
     for symbol in etf_symbol_list:
         # We determine the overall ranking by checking the ratings for Zacks,
         # Morningstar, and the sustainability reported by Morningstar
