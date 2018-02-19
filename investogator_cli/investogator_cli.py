@@ -72,7 +72,8 @@ def get_ranked_tech_etfs(limit):
             "ABOVE AVERAGE":4,
             "AVERAGE":3,
             "BELOW AVERAGE":2,
-            "LOW":1
+            "LOW":1,
+            "NO RATING":0
     }
     
     zacks_rank_dict = {
