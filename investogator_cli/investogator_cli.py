@@ -34,7 +34,6 @@ def get_ratings(symbol):
     else:
         print("Morningstar rates {0} at a {1} out of 5".format(
             symbol, ms_rating))
-    return
 
 
 @cli.command("get-sustainability")
@@ -50,17 +49,69 @@ def get_sustainability(symbol):
         return
     print("Morningstar reports {0} sustainability for {1}.".format(
         sus_rating, symbol))
-    return
+
+
+def get_all_etf_categories():
+    page = requests.get("http://etfdb.com/etfdb-categories/")
+    if page.status_code != 200:
+        logger.debug("ETFdb is returning status code {0}".format(
+            page.status_code))
+        return None
+    soup = BeautifulSoup(page.text, 'html.parser')
+    for a in soup.find_all('a', href=True):
+        if "etfdb-category" in a['href']:
+            print(a['href'])
 
 
 # This allows you to get ranked ETFs depending on which category you're
 # interested in (e.g. tech, large cap growth, etc)
 # TODO: make it possible to pick multiple categories
+# TODO: figure out how to not have to make this dict...
 cat_dict = {
+        # there is no 1
         "large-cap-blend": 2,
         "large-cap-growth": 3,
+        "financials": 4,
+        "small-cap-blend": 5,
+        "leveraged": 6,
+        "japan": 7,
+        "energy": 8,
+        "emerging-markets": 9,
+        # there is no 10
         "large-cap-value": 11,
-        "tech": 15
+        "leveraged-commodities": 12,
+        "inverse": 13,
+        "latin-america": 14,
+        "technology": 15,
+        "china": 16,
+        "foreign-large-cap": 17,
+        "mid-cap-blend": 18,
+        "precious-metals": 19,
+        "commodities": 20,
+        "real-estate": 21,
+        "consumer-discretionary": 22,
+        "government-bonds": 23,
+        "utilities": 24,
+        "asia-pacific": 25,
+        "consumer-staples": 26,
+        "small-cap-growth": 27,
+        "europe": 28,
+        "health-biotech": 29,
+        "metals": 30,
+        "small-cap-value": 31,
+        "leveraged-real-estate": 32,
+        "mid-cap-value": 33,
+        "oil-gas": 34,
+        "mortgage-backed-securities": 35,
+        "mid-cap-growth": 36,
+        "currency": 37,
+        "inflation-protected-bonds": 38,
+        "agricultural-commodities": 39,
+        "total-bond-market": 40,
+        "communications": 41,
+        "all-cap": 42,
+        "diversified-portfolio": 43,
+        "global": 44
 }
 
 
