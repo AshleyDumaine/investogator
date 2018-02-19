@@ -57,11 +57,13 @@ def get_sustainability(symbol):
 # interested in (e.g. tech, large cap growth, etc)
 # TODO: make it possible to pick multiple categories
 cat_dict = {
-        "large-cap-blend":2,
-        "large-cap-growth":3,
-        "large-cap-value":11,
-        "tech":15
+        "large-cap-blend": 2,
+        "large-cap-growth": 3,
+        "large-cap-value": 11,
+        "tech": 15
 }
+
+
 @cli.command("get-ranked-etfs")
 @click.argument('category', nargs=1, type=click.Choice(cat_dict.keys()))
 @click.option('--limit', default=25)
@@ -76,28 +78,30 @@ def get_ranked_etfs(category, limit):
 # We want good ranks to be high numbers (5 max) so we need to convert some
 # rankings
 sus_rank_dict = {
-        "HIGH":5,
-        "ABOVE AVERAGE":4,
-        "AVERAGE":3,
-        "BELOW AVERAGE":2,
-        "LOW":1,
-        "NO RATING":0
+        "HIGH": 5,
+        "ABOVE AVERAGE": 4,
+        "AVERAGE": 3,
+        "BELOW AVERAGE": 2,
+        "LOW": 1,
+        "NO RATING": 0
 }
-    
+
 zacks_rank_dict = {
-        "1 - Strong Buy":5,
-        "2 - Buy":4,
-        "3 - Hold":3,
-        "4 - Sell":2,
-        "5 - Strong Sell":1
+        "1 - Strong Buy": 5,
+        "2 - Buy": 4,
+        "3 - Hold": 3,
+        "4 - Sell": 2,
+        "5 - Strong Sell": 1
 }
+
+
 def get_etf_rank_list(etf_symbol_list):
 
     ranked_etfs = []
     if len(etf_symbol_list) == 0:
         print("No symbols found.")
         return
- 
+
     for symbol in etf_symbol_list:
         # We determine the overall ranking by checking the ratings for Zacks,
         # Morningstar, and the sustainability reported by Morningstar
@@ -112,12 +116,12 @@ def get_etf_rank_list(etf_symbol_list):
             zacks_rating = 0
         else:
             zacks_rating = zacks_rank_dict[zacks_rating]
-        
+
         if ms_rating is None:
             ms_rating = 0
         else:
             ms_rating = int(ms_rating)
-        
+
         if ms_sus is None:
             ms_sus = 0
         else:
@@ -151,11 +155,11 @@ def get_all_etfs(category, limit):
         # change...
         etf_symbol_list.append(data['symbol'].split("/")[2])
     return etf_symbol_list
-    
+
 
 def check_zacks_rating(symbol):
     page = requests.get("https://www.zacks.com/funds/etf/" + symbol +
-            "/profile")
+                        "/profile")
 
     if page.status_code != 200:
         logger.debug("Zacks is returning status code {0}".format(
@@ -186,35 +190,35 @@ def check_ms_rating(symbol):
 
 
 def check_ms_sustainability(symbol):
-    page = requests.get("http://etfs.morningstar.com/etfq/esg-etf?&t=ARCX:" +
-            symbol + (
-                "&region=usa&"
-                "culture=en-US&"
-                "version=RET&"
-                "cur=&"
-                "test=QuoteiFrame&"
-                "e=eyJlbmMiOiJBMTI4R0NNIiwiYWxnIjoiUlNBLU9BRVAifQ.tSDHKSXdLz9Z-"
-                "95RIt28jRBS2bycBEfA83K4AAWtpDsmwZ3eZJuOatSWRjLITgGJVDutGigpcxJ"
-                "x7ojDFi4SiUq93kz5skXbVz9We3sUV5xXKSDW7W5HTtV0Oh4eSYl4bjf_csXP5"
-                "pexU-eAYvofcSrHtmEn_GOcQ4GJA_qzXJc.70cJ7G9sm6MH4gYA.eZUC9ESEz_"
-                "SGFNEd4tF5O3eXrS6mKs8-AWDZH4r55aD1Bm0K2R-Na5bOxUmXr2XbGTrkfbi-"
-                "-UTrPjvwRxAWYbMIGxs12mKL1etKxdmVImSVhN2bk4WDOfV9Vnotfu0-YigkPJ"
-                "HAAPnnB5owMwmWOmSsm-Xxxo-kFLK5C1K3YYBYe2ruwZVxO1rJ6se-ruzjipYA"
-                "mRR9vIjxaUvadr0bAOxnS8KbgFIdv5fBILs.nEgzKr6eTtw896WO8yE1mA&_=1"
-                "518983228036"))
+    page = requests.get(
+        "http://etfs.morningstar.com/etfq/esg-etf?&t=ARCX:" +
+        symbol + (
+            "&region=usa&"
+            "culture=en-US&"
+            "version=RET&"
+            "cur=&"
+            "test=QuoteiFrame&"
+            "e=eyJlbmMiOiJBMTI4R0NNIiwiYWxnIjoiUlNBLU9BRVAifQ.tSDHKSXdLz9Z-"
+            "95RIt28jRBS2bycBEfA83K4AAWtpDsmwZ3eZJuOatSWRjLITgGJVDutGigpcxJ"
+            "x7ojDFi4SiUq93kz5skXbVz9We3sUV5xXKSDW7W5HTtV0Oh4eSYl4bjf_csXP5"
+            "pexU-eAYvofcSrHtmEn_GOcQ4GJA_qzXJc.70cJ7G9sm6MH4gYA.eZUC9ESEz_"
+            "SGFNEd4tF5O3eXrS6mKs8-AWDZH4r55aD1Bm0K2R-Na5bOxUmXr2XbGTrkfbi-"
+            "-UTrPjvwRxAWYbMIGxs12mKL1etKxdmVImSVhN2bk4WDOfV9Vnotfu0-YigkPJ"
+            "HAAPnnB5owMwmWOmSsm-Xxxo-kFLK5C1K3YYBYe2ruwZVxO1rJ6se-ruzjipYA"
+            "mRR9vIjxaUvadr0bAOxnS8KbgFIdv5fBILs.nEgzKr6eTtw896WO8yE1mA&_=1"
+            "518983228036"))
 
     if page.status_code != 200:
         logger.debug("Morningstar is returning status code {0}".format(
             page.status_code))
         return None
-    
+
     soup = BeautifulSoup(page.text, 'html.parser')
     # The rating doesn't have a unique ID or class so we have to hope the HTML
     # doesn't change...
     rating_html = soup.find_all(class_='text-margin5 text-size14')
-    
+
     if len(rating_html) == 0:
         return None
-    
-    return rating_html[0].get_text().strip().upper()
 
+    return rating_html[0].get_text().strip().upper()
