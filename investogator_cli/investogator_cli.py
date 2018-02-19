@@ -58,9 +58,8 @@ def get_all_etf_categories():
             page.status_code))
         return None
     soup = BeautifulSoup(page.text, 'html.parser')
-    for a in soup.find_all('a', href=True):
-        if "etfdb-category" in a['href']:
-            print(a['href'])
+    # TODO: finish implementing this once I figure out how to get the
+    # etfdb-category links
 
 
 # This allows you to get ranked ETFs depending on which category you're
