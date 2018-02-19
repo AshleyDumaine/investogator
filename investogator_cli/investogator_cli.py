@@ -53,12 +53,27 @@ def get_sustainability(symbol):
     return
 
 
-# TODO: Instead of just tech, generalize this to take certain cateogry
-# argument(s)
-@cli.command("get-ranked-tech-etfs")
+# This allows you to get ranked ETFs depending on which category you're
+# interested in (e.g. tech, large cap growth, etc)
+# TODO: make it possible to pick multiple categories
+@cli.command("get-ranked-etfs")
+@click.argument('category', nargs=1, type=click.Choice([
+    'tech',
+    'large-cap-growth']))
 @click.option('--limit', default=25)
-def get_ranked_tech_etfs(limit):
-    etf_symbol_list = get_all_tech_etfs(limit)
+def get_ranked_etfs(category, limit):
+    # Not quite sure of a good way to get the category ID for now aside from
+    # just going into the inspector on each category's page so we have a dict
+    # to hold the mappings for now
+    cat_dict = {
+            "tech":15,
+            "large-cap-growth":3
+    }
+    etf_symbol_list = get_all_etfs(cat_dict[category], limit)
+    get_etf_rank_list(etf_symbol_list)
+
+
+def get_etf_rank_list(etf_symbol_list):
 
     ranked_etfs = []
     if len(etf_symbol_list) == 0:
@@ -116,11 +131,11 @@ def get_ranked_tech_etfs(limit):
         print("{0}: {1} / 15".format(symbol, rank))
 
 
-def get_all_tech_etfs(limit):
+def get_all_etfs(category, limit):
     etf_symbol_list = []
     page = requests.get((
             "http://etfdb.com/data_set/?tm=1725&"
-            "cond={%22by_category%22:15}&"
+            "cond={%22by_category%22:" + str(category) + "}&"
             "no_null_sort=true&"
             "count_by_id=&"
             "sort=ytd_percent_return&"
