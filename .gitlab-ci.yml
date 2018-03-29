@@ -1,0 +1,6 @@
+image: clburlison/pylint:py3-alpine
+
+lint:
+  script:
+    - pylint investogator_cli/investogator_cli.py
+  stage: test
