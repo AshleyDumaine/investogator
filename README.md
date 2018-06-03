@@ -12,8 +12,9 @@ checking dozens of ETF symbols across multiple sites.
 #### For ratings:
 - https://www.zacks.com 
 - http://www.morningstar.com
+
 #### For sustainability:
- - http://etfs.morningstar.com
+- http://etfs.morningstar.com
 
 ## How is the overall rating calculated?
 Each of the ratings is on a 1-5 scale with 5 being a strong buy / high sustainability and 1 being a strong 
